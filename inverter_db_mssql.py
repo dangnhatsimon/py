@@ -1,19 +1,19 @@
 # import libraries
 import pyodbc 
-from datetime import datetime, timedelta
-import pandas as pd
-from string import ascii_lowercase as alc
+# from datetime import datetime, timedelta
+# import pandas as pd
+# from string import ascii_lowercase as alc
 
 # Define your connection parameters
 SERVER =  'DCC-DE01\DCC' # Change server if need
 DATABASE = 'inverter_db' # Change database name that need to create
-# USERNAME = 'DCC-DE01\DCC'
-# PASSWORD = ''
-TRUSTED = 'yes' # for Trusted_Connection
+USERNAME = 'DCC-DE01\DCC'
+PASSWORD = ''
+TRUSTED = 'no' # for Trusted_Connection if 'yes' SQL Server using the Windows credentials, if 'no' SQL Server Authentication
 ENCRYPT = 'no' # for Encrypt
 
 # Create a connection to the database with Windows authentication
-connectionString = f'DRIVER={{ODBC Driver 18 for SQL Server}};SERVER={SERVER};Trusted_Connection={TRUSTED};Encrypt={ENCRYPT};'
+connectionString = f'DRIVER={{ODBC Driver 18 for SQL Server}};SERVER={SERVER};Trusted_Connection={TRUSTED};Encrypt={ENCRYPT};UID={USERNAME};PWD={PASSWORD};Integrated Security=SSPI;'
 conn = pyodbc.connect(connectionString,autocommit=True)
 cursor = conn.cursor()
 
@@ -55,21 +55,21 @@ for i in cs.keys():
                 id INT,
                 timestamp DATETIME,
                 [CS{i:02}_INV{chr(i+64)}{j:02}_Abnormal Equipment] BIT DEFAULT 1,
-                [CS{i:02}_INV{chr(i+64)}{j:02}_Abnormal Ground] FLOAT,
-                [CS{i:02}_INV{chr(i+64)}{j:02}_Abnormal Leakage Current] FLOAT,
+                [CS{i:02}_INV{chr(i+64)}{j:02}_Abnormal Ground] BIT DEFAULT 1,
+                [CS{i:02}_INV{chr(i+64)}{j:02}_Abnormal Leakage Current] BIT DEFAULT 1,
                 [CS{i:02}_INV{chr(i+64)}{j:02}_Abnormal Monitor Unit] BIT DEFAULT 1,
-                [CS{i:02}_INV{chr(i+64)}{j:02}_Abnormal String] FLOAT,
-                [CS{i:02}_INV{chr(i+64)}{j:02}_AFCI Self-test Fault] FLOAT,
-                [CS{i:02}_INV{chr(i+64)}{j:02}_COMUNICATION STATUS] FLOAT,
-                [CS{i:02}_INV{chr(i+64)}{j:02}_DC Arc Fault] FLOAT,
-                [CS{i:02}_INV{chr(i+64)}{j:02}_Grid Frequency Instability] FLOAT,
-                [CS{i:02}_INV{chr(i+64)}{j:02}_Grid Overfrequency] FLOAT,
-                [CS{i:02}_INV{chr(i+64)}{j:02}_Grid Underfrequency] FLOAT,
-                [CS{i:02}_INV{chr(i+64)}{j:02}_Grid Overvoltage] FLOAT,
-                [CS{i:02}_INV{chr(i+64)}{j:02}_Grid Undervoltage] FLOAT,
-                [CS{i:02}_INV{chr(i+64)}{j:02}_High String Voltage] FLOAT,
-                [CS{i:02}_INV{chr(i+64)}{j:02}_High String Voltage to Ground] FLOAT,
-                [CS{i:02}_INV{chr(i+64)}{j:02}_High Temperature] FLOAT,
+                [CS{i:02}_INV{chr(i+64)}{j:02}_Abnormal String] BIT DEFAULT 1,
+                [CS{i:02}_INV{chr(i+64)}{j:02}_AFCI Self-test Fault] BIT DEFAULT 1,
+                [CS{i:02}_INV{chr(i+64)}{j:02}_COMUNICATION STATUS] BIT DEFAULT 1,
+                [CS{i:02}_INV{chr(i+64)}{j:02}_DC Arc Fault] BIT DEFAULT 1,
+                [CS{i:02}_INV{chr(i+64)}{j:02}_Grid Frequency Instability] BIT DEFAULT 1,
+                [CS{i:02}_INV{chr(i+64)}{j:02}_Grid Overfrequency] BIT DEFAULT 1,
+                [CS{i:02}_INV{chr(i+64)}{j:02}_Grid Underfrequency] BIT DEFAULT 1,
+                [CS{i:02}_INV{chr(i+64)}{j:02}_Grid Overvoltage] BIT DEFAULT 1,
+                [CS{i:02}_INV{chr(i+64)}{j:02}_Grid Undervoltage] BIT DEFAULT 1,
+                [CS{i:02}_INV{chr(i+64)}{j:02}_High String Voltage] BIT DEFAULT 1,
+                [CS{i:02}_INV{chr(i+64)}{j:02}_High String Voltage to Ground] BIT DEFAULT 1,
+                [CS{i:02}_INV{chr(i+64)}{j:02}_High Temperature] BIT DEFAULT 1,
                 [CS{i:02}_INV{chr(i+64)}{j:02}_INVERTER A PHASE CURRENT] FLOAT,
                 [CS{i:02}_INV{chr(i+64)}{j:02}_INVERTER AB LINE VOLTAGE] FLOAT,
                 [CS{i:02}_INV{chr(i+64)}{j:02}_INVERTER ACTIVE POWER VALUE] FLOAT,
@@ -84,7 +84,7 @@ for i in cs.keys():
                 [CS{i:02}_INV{chr(i+64)}{j:02}_INVERTER DC INPUT VOLTAGE] FLOAT,
                 [CS{i:02}_INV{chr(i+64)}{j:02}_INVERTER EFFICIENCY] FLOAT,
                 [CS{i:02}_INV{chr(i+64)}{j:02}_INVERTER FREQUENCY VALUE] FLOAT,
-                [CS{i:02}_INV{chr(i+64)}{j:02}_INVERTER LOCKED] FLOAT,
+                [CS{i:02}_INV{chr(i+64)}{j:02}_INVERTER LOCKED] BIT DEFAULT 1,
                 [CS{i:02}_INV{chr(i+64)}{j:02}_INVERTER POWER FACTOR VALUE] FLOAT,
                 [CS{i:02}_INV{chr(i+64)}{j:02}_INVERTER PV1 INPUT CURRENT] FLOAT,
                 [CS{i:02}_INV{chr(i+64)}{j:02}_INVERTER PV1 INPUT VOLTAGE] FLOAT,
@@ -112,7 +112,7 @@ for i in cs.keys():
                 [CS{i:02}_INV{chr(i+64)}{j:02}_INVERTER PV12 INPUT VOLTAGE] FLOAT,
                 [CS{i:02}_INV{chr(i+64)}{j:02}_INVERTER RCD CURRENT] FLOAT,
                 [CS{i:02}_INV{chr(i+64)}{j:02}_INVERTER REACTIVE POWER VALUE] FLOAT,
-                [CS{i:02}_INV{chr(i+64)}{j:02}_INVERTER STATUS] INT,
+                [CS{i:02}_INV{chr(i+64)}{j:02}_INVERTER STATUS] BIT DEFAULT 1,
                 [CS{i:02}_INV{chr(i+64)}{j:02}_INVERTER TOTAL CO2 REDUCTION] FLOAT,
                 [CS{i:02}_INV{chr(i+64)}{j:02}_INVERTER TOTAL ENERGY YIELD CURRENT DAY VALUE] FLOAT,
                 [CS{i:02}_INV{chr(i+64)}{j:02}_INVERTER TOTAL ENERGY YIELD CURRENT MONTH VALUE] FLOAT,
